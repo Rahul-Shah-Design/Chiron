@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chiron Flashcards</title>
+<!--
+  BOILERPLATE SKELETON — functional, not fancy.
+  Chiron appends card objects to the CARDS array below (between the
+  ANCHOR comments) at session/feedback/review close. Scheduling state
+  lives in localStorage keyed by card id, so appending cards never
+  resets progress. SM-2 scheduling. Open in any browser; no Claude,
+  no server, no network.
+-->
+<style>
+  body{font-family:system-ui,sans-serif;background:#f5f2ec;color:#1a1a1a;
+    display:flex;flex-direction:column;align-items:center;padding:2rem;margin:0}
+  #card{background:#fff;border:1px solid #ccc;border-radius:12px;max-width:560px;
+    width:100%;min-height:220px;padding:2rem;font-size:1.15rem;line-height:1.5;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  #meta{margin:1rem 0;color:#666;font-size:.9rem}
+  #grades{display:none;gap:.5rem;margin-top:1rem}
+  button{padding:.6rem 1.2rem;border:1px solid #999;border-radius:8px;
+    background:#fff;font-size:1rem;cursor:pointer}
+  button:hover{background:#eee}
+  .tag{font-size:.75rem;color:#888;position:absolute;top:.75rem;left:1rem}
+  #card{position:relative}
+</style>
+</head>
+<body>
+<h1>Chiron Deck</h1>
+<div id="meta"></div>
+<div id="card">Loading…</div>
+<div id="grades">
+  <button data-q="1">Again</button>
+  <button data-q="3">Hard</button>
+  <button data-q="4">Good</button>
+  <button data-q="5">Easy</button>
+</div>
+
+<script>
+const CARDS = [
+  // ── CHIRON APPEND ANCHOR: BEGIN CARDS ──
+  // {
+  //   id: "1.1-clt-001",            // unique, stable
+  //   course: "ai-adaptive-learning",
+  //   topic: "1.1-cognitive-load-theory",
+  //   front: "…prompt, in the learner's own final wording…",
+  //   back: "…answer…",
+  //   type: "recall",               // recall | application
+  //   mutation: ""                  // for application cards: note telling
+  //                                 // review sessions to vary the surface
+  //                                 // scenario. Static here; live mutation
+  //                                 // happens in Chiron-run reviews.
+  // },
+  // ── CHIRON APPEND ANCHOR: END CARDS ──
+];
+
+// ── SM-2 ──
+const store = {
+  get(id){ try{return JSON.parse(localStorage.getItem("chiron-"+id))||null}catch(e){return null} },
+  set(id,s){ localStorage.setItem("chiron-"+id, JSON.stringify(s)) }
+};
+function schedule(state, q){
+  // q: 1 fail, 3 hard, 4 good, 5 easy (SM-2 quality)
+  let {reps=0, ef=2.5, interval=0} = state||{};
+  if(q < 3){ reps = 0; interval = 1; }
+  else {
+    reps += 1;
+    interval = reps===1 ? 1 : reps===2 ? 6 : Math.round(interval*ef);
+    ef = Math.max(1.3, ef + (0.1 - (5-q)*(0.08+(5-q)*0.02)));
+  }
+  const due = new Date(); due.setDate(due.getDate()+interval);
+  return {reps, ef, interval, due: due.toISOString()};
+}
+function dueCards(){
+  const now = new Date().toISOString();
+  return CARDS.filter(c => {
+    const s = store.get(c.id);
+    return !s || s.due <= now;
+  });
+}
+
+// ── minimal review loop ──
+let queue = dueCards(), current = null, showingBack = false;
+const cardEl = document.getElementById("card"),
+      gradesEl = document.getElementById("grades"),
+      metaEl = document.getElementById("meta");
+function render(){
+  metaEl.textContent = queue.length + " due";
+  if(!queue.length){ cardEl.textContent = "Nothing due. Go learn something."; gradesEl.style.display="none"; return; }
+  current = queue[0]; showingBack = false;
+  cardEl.innerHTML = '<span class="tag">'+ (current.topic||"") +'</span>' + current.front;
+  gradesEl.style.display = "none";
+}
+cardEl.addEventListener("click", () => {
+  if(!current || showingBack) return;
+  showingBack = true;
+  cardEl.innerHTML = '<span class="tag">'+ (current.topic||"") +'</span>' + current.back;
+  gradesEl.style.display = "flex";
+});
+gradesEl.addEventListener("click", e => {
+  const q = Number(e.target.dataset.q); if(!q || !current) return;
+  store.set(current.id, schedule(store.get(current.id), q));
+  queue = q < 3 ? [...queue.slice(1), current] : queue.slice(1); // failed cards recycle
+  render();
+});
+render();
+</script>
+</body>
+</html>

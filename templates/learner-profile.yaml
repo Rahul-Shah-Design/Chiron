@@ -1,0 +1,36 @@
+# GLOBAL learner profile — cross-subject traits ONLY.
+# Mastery and misconceptions do NOT live here; they are per-course.
+# Priors here move only via recalibrate.md, on cross-session evidence.
+
+learner:
+  name: ""
+
+calibration_patterns:
+  # Behavioral evidence only, cited. e.g.
+  # - pattern: "overconfident on definitions"
+  #   evidence: "rated 3, wrong — 1.4 and 1.9 worksheets"
+  #   noted: 2026-07-07
+  []
+
+instructional_preferences:
+  # DEMONSTRATED preferences from behavior — never learning-styles typology.
+  # e.g.
+  # - "pushes back when lectured; engages when questioned"
+  # - "example-first beats abstraction-first (observed 1.1, 1.5)"
+  []
+
+assistance_baseline: medium   # high | medium | low — a PRIOR, not a dial.
+                              # Session calibration adjusts per topic;
+                              # live performance overrides both.
+
+metacognitive_habits:
+  # e.g. "self-corrects mid-answer when given silence"
+  []
+
+meta:
+  created: ""
+  last_recalibrated: ""
+  courses:
+    # - name: ""
+    #   path: courses/<slug>/
+    []
