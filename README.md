@@ -127,6 +127,7 @@ references/
 ├── plan-schema.md            # the course-plan file: claims, modules, wrong models, log
 ├── module-build.md           # module mechanics: checks, interleaving, instruments, handoff
 ├── flashcard-deck.md         # flashcards.html data format and required features
+├── background-builder.md     # the background agent that builds modules while the tutor talks
 └── example-run.md            # an abridged course, turn by turn (exposure in photography)
 ```
 

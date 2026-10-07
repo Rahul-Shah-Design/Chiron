@@ -1,8 +1,8 @@
-# course-plan.md schema
+# course-plan (ignore).md schema
 
 Read before writing the plan. The plan is the only state shared between chat and artifacts; if it isn't in this file it doesn't exist at the next boundary.
 
-It is an artifact named `course-plan.md`, created before module 1 and updated in place at every boundary. The learner can open it; it is their map of the course.
+It is a file named `course-plan (ignore).md` in the build directory (SKILL.md §0), created before module 1 and updated in place at every boundary — by the tutor only; the background builder reads it and never writes it. It is mirrored to the learner's connected folder when there is one.
 
 ```markdown
 ---
