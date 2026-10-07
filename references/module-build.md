@@ -20,7 +20,7 @@ because they teach a shape that isn't true. Where a figure is a schematic rather
 data, that is fine; label it as one. **SVG is for shapes a child could draw** — the
 moment accuracy depends on the drawing, use computed output or a schematic.
 
-**Consult the frontend-design skill for the visual direction** before writing the
+**Load the `artifact-design` skill for the visual direction** before writing the
 markup. The course should look like it was designed for this subject.
 
 ### Predict first
